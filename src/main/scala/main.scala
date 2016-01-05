@@ -4,61 +4,105 @@ import rapture.web._, httpBackends.jetty._
 import rapture.dom._
 import rapture.html._
 import rapture.codec._
-import rapture.uri.{Link => _, _}
+import rapture.uri.{Link => ULink, _}
 import rapture.net._
 import rapture.io._
 import rapture.mime._
 import rapture.time._
+import rapture.json._, jsonBackends.jawn._
 
 import encodings.`UTF-8`.{name => _, _}
 
 import htmlSyntax._
+import dateFormats.longEuropean._
 
 import RequestExtractors._
 
 object `package` {
-  
+  // FIXME: This should go into rapture-uri
+  def anch(s: String): ULink = new ULink {
+    override def toString = s"#$s"
+    def absolute = true
+  }
+
+  val currentVersion = "2.0.0-M3"
 }
 
 object Main {
+
   def main(args: Array[String]): Unit = HttpServer.listen(10002) { r => try {
     r match {
+      case Path(^) =>
+        Pages.home()
       case Path(^ / "css" / f) =>
         implicit val mime = MimeTypes.`text/css`
         uri"classpath:css/$f".input[Char]
+      case r@Path(^ / "sample.json") =>
+        if(r.param('group, "") == "beatles") json"""{
+	  "groups": [
+	    {
+	      "groupName": "The Beatles",
+	      "members": [
+		{ "name": "John Lennon", "born": 1940 },
+		{ "name": "Paul McCartney", "born": 1942 },
+		{ "name": "Ringo Starr", "born": 1940 },
+		{ "name": "George Harrison", "born": 1943 }
+	      ]
+	     }
+	  ]
+	}""" else json"{}"
+      case Path(^ / "download" / "latest") =>
+        uri"http://search.maven.org/remotecontent?filepath=com/propensive/rapture_2.11/$currentVersion/rapture_2.11-$currentVersion.jar"
+      case Path(^ / "script" / f) =>
+        implicit val mime = MimeTypes.`text/javascript`
+        uri"classpath:script/$f".input[Char]
+      case Path(^ / "content" / f) =>
+        implicit val mime = MimeTypes.`text/plain`
+        uri"classpath:content/$f".input[Char]
       case Path(^ / "images" / f) =>
         implicit val mime = MimeTypes.`image/jpeg`
         uri"classpath:images/$f".input[Byte]
-      case Path(^) =>
-        Pages.home()
-      case Path(^ / "blog" / entry) =>
-        Blog.blogEntries.find(_.id == entry).map(Blog.blogPage).getOrElse(Pages.notFound): HtmlDoc
+      case Path(^ / "intro") =>
+        Pages.basicPage("Getting Started with Rapture", "intro", List("A brief tour", "Parse the response as JSON", "Extracting the JSON into a Case Class", "Embed the values into some HTML", "Serve it as a web page"))
+      case Path(^ / "mod" / mod) =>
+        Site.modules.find(_.shortName == mod).map { case Module(name, id, desc, _) =>
+          Pages.basicPage(name, id, Nil, showAuthor = false)
+        }.getOrElse(Pages.notFound()): HtmlDoc
+      case Path(^ / "blog" / "rapture-manifesto") =>
+        Pages.basicPage("The Rapture Manifesto", "rapture-manifesto", Nil)
+      case Path(^ / "learn") =>
+        Pages.basicPage("Tutorials", "learn", Nil, showAuthor = false)
+      case Path(^ / "lists") =>
+        Pages.basicPage("Mailing Lists", "mailing-lists", Nil, showAuthor = false)
+      case Path(^ / "api") =>
+        Pages.basicPage("Rapture API", "api-docs", Nil, showAuthor = false)
       case _ =>
-        Template.page("Other page")(P("Hello world"))
+        Pages.notFound()
     } } catch {
       case e: Exception => HtmlDoc(Html(Head, Body("Failed")))
     }
   }
 }
 
-object Site {
-  case class Module(name: String, shortName: String, show: Boolean = true)
+case class Module(name: String, shortName: String, overview: String, show: Boolean = true)
 
-  val intro = Div(
-    P("Rapture is a family of Scala libraries providing beautiful idiomatic Scala APIs for common programming tasks, like working with I/O, cryptography and JSON & XML processing."),
+object Site {
+
+  val intro = Div(id = 'introText)(
+    P("Rapture is a family of Scala libraries providing beautiful idiomatic and typesafe Scala APIs for common programming tasks, like working with I/O, cryptography and JSON & XML processing."),
     P("All Rapture libraries are open source, and are available for Scala 2.10 and 2.11 under the Apache Software License 2.0. Source code is on GitHub, and binaries are available on Maven Central.")
   )
 
   val modules = List(
-    Module("JSON", "json"),
-    Module("I/O", "io"),
-    Module("Core", "core"),
-    Module("Crypto", "crypto"),
-    Module("Command-line Interface", "cli"),
-    Module("Internationalization", "i18n"),
-    Module("XML", "xml"),
-    Module("HTML", "html"),
-    Module("Web", "web")
+    Module("JSON", "json", "Rapture JSON makes it easy to integrate dynamically-typed JSON into statically-typed Scala."),
+    Module("I/O", "io", "Rapture I/O provides support for synchronous streaming of data between a variety of heterogeneous resources."),
+    Module("Core", "core", "Rapture Core provides some common utilities, including failure handling with Modes."),
+    Module("Crypto", "crypto", "Rapture Crypto provides basic cryptography support in Scala."),
+    Module("Command-line Interface", "cli", "Rapture Command-line Interface makes it easy to interact with Scala programs from the shell"),
+    Module("Internationalization", "i18n", "Rapture Internationalization provides typesafe internationalized message support."),
+    Module("XML", "xml", "Rapture XML makes it easy to integrate dynamically-typed XML into statically-typed Scala."),
+    Module("HTML", "html", "Rapture HTML provides lightweight syntax for generating HTML."),
+    Module("HTTP", "http", "Rapture HTTP makes it easy to handle HTTP requests.")
   )
 
   val keyPoints = List(
@@ -76,32 +120,10 @@ case class BlogEntry(id: String, date: Date, title: String)
 object Blog {
 
   val blogEntries = List(
-    BlogEntry("rapture-manifesto", 1-Jan-2016, "The Rapture Manifesto")
+    BlogEntry("rapture-manifesto", 5-Jan-2016, "The Rapture Manifesto")
   )
 
   val blogs = blogEntries.map { case be@BlogEntry(id, _, _) => (id -> be) }.toMap
-
-  def blogPage(entry: BlogEntry): HtmlDoc = Template.page(entry.title)(
-    Div(classes = Seq("container", "shortBanner"))(
-      P(" ")
-    ),
-    Div(classes = Seq("container"))(
-      Div(classes = Seq("column", "two-thirds"))(
-        H2(entry.title),
-        Script(typ = "text/javascript")(s"includeMd('blog/${entry.id}')")
-      ),
-      Div(classes = Seq("column", "one-third"))(
-        Ul(classes = Seq("sidebar"))(
-	  Li(
-	    A(href = ^)("Back Home")
-	  ),
-	  Li(
-	    A(href = ^)("Back Home")
-	  )
-	)
-      )
-    )
-  )
 
 }
 
@@ -109,8 +131,8 @@ object Pages {
   
   private def versionBox() = Div(id = 'versionBox)(
     Div(id = 'currentVersion)(
-      Small("Current Release"),
-      "2.0.0-M2"
+      Small("Current", Br, "release"),
+      currentVersion
     ),
     Div(id = 'buildChoice)(
       Div(id = 'sbtBtn, classes = Seq("selected"), onclick = "document.getElementById('sbtBtn').className = 'selected'; document.getElementById('mavenBtn').className = ''; document.getElementById('jarBtn').className = ''; document.getElementById('maven').style.display = 'none'; document.getElementById('jar').style.display = 'none'; document.getElementById('sbt').style.display = 'block';")("SBT"),
@@ -118,38 +140,91 @@ object Pages {
       Div(id = 'jarBtn, onclick = "document.getElementById('sbtBtn').className = ''; document.getElementById('mavenBtn').className = ''; document.getElementById('jarBtn').className = 'selected'; document.getElementById('maven').style.display = 'none'; document.getElementById('jar').style.display = 'block'; document.getElementById('sbt').style.display = 'none';")("JAR")
     ),
     Div(id = 'buildCode)(
-      Div(id = 'sbt)(""""com.propensive" %% "rapture" % "2.0.0-M2""""),
+      Div(id = 'sbt)(s""""com.propensive" %% "rapture" % "$currentVersion""""),
       Div(id = 'maven, style = "display:none")(
         "<groupId>com.propensive</groupId>", Br,
         "<artifactId>rapture_2.11</artifactId>", Br,
-        "<version>2.0.0-M2</version>"
+        s"<version>$currentVersion</version>"
       ),
-      Div(id = 'jar, style = "display:none")("""http://rapture.io/rapture-2.0.0-M2.jar""")
+      Div(id = 'jar, style = "display:none")(s"""http://rapture.io/rapture-$currentVersion.jar""")
     )
   )
  
-  def notFound: HtmlDoc = Template.page("Rapture: Not Found")(
+  def basicPage(heading: String, content: String, links: List[String], showAuthor: Boolean = true): HtmlDoc = Template.page(heading)(
+    Div(classes = Seq("container", "shortBanner"))(
+      Div(classes = Seq("shadow"))(" "),
+      H1(" "),
+      Div(classes = Seq("shadow3"))(" ")
+    ),
+    Div(classes = Seq("container", "fixed"))(
+      Div(classes = Seq("column", "one-quarter", "follow"))(
+        if(links.length > 0) Div(
+          H5("Quick Links"),
+          Ul(classes = Seq("bullets"))(
+	    links.map { ln => Li(
+	      A(href = anch(ln.toLowerCase.replaceAll("[^a-z0-9]", "")))(ln)
+	    ) }: _*
+          )
+        ) else Div(" ")
+      )
+    ),
+    Div(classes = Seq("container", "first"))(
+      Div(classes = Seq("column", "one-quarter", "follow"))(
+        P(Br)
+      ),
+      Div(classes = Seq("column", "one-half", "page"))(
+        H2(heading),
+        Script(typ = "text/javascript")(s"includeMd('$content');"),
+        Img(src = ^ / "images" / "mono_balloon_small.png", id = 'end)
+      ),
+      Div(classes = Seq("column", "one-quarter", "sidebar"))(
+        if(showAuthor) Div(
+          H5("Author"),
+          Img(classes = Seq("author"), src = ^ / "images" / "jon.jpg"),
+          P(B("Jon Pretty"), Br, A(href = uri"http://twitter.com/propensive")("@propensive"))
+        ) else Div(" "),
+	H5("Rapture Blog"),
+        Ul(
+	  "",
+	  Blog.blogEntries.map { case BlogEntry(id, date, title) =>
+            Li(A(href = ^ / "blog" / id)(title), Br, Span(classes = Seq("date"))(date.format))
+	  }: _*
+	)
+      )
+    )
+  )
+  def notFound(): HtmlDoc = Template.page("Rapture: Not Found")(
     P("The page you have requested cannot be found.")
   )
 
   def home() = Template.page("Rapture: Home")(
     Div(classes = Seq("container", "banner"))(
       H1(
-        Img(src = ^ / "images" / "mono_balloon_small.png", classes = Seq("balloon")),
+        Span(id = 'balloon)(Img(src = ^ / "images" / "logo_color.png")),
         "Rapture"
-      )
+      ),
+      Div(classes = Seq("shadow2"))(" ")
     ),
     Div(classes = Seq("container"))(
       Div(classes = Seq("intro", "one-half", "column"))(
         Site.intro
       ),
       Div(classes = Seq("one-half", "column"))(
-        versionBox()
+        versionBox(),
+	H5(classes = Seq("whatNow"))("What now?"),
+	Ul(classes = Seq("bullets"))(
+          Li(A(href = ^ / "intro")("Getting Started with Rapture")),
+	  Li(A(href = uri"https://gitter.im/propensive/rapture", target = '_new)("Join the discussion on Gitter")),
+          Li(A(href = uri"https://github.com/propensive/rapture")("Explore the source code"))
+	)
       )
     ),
     Div(classes = Seq("container"))(
+      H5("About Rapture")
+    ),
+    Div(classes = Seq("container"))(
       Site.keyPoints.map { case (t, c) => Div(classes = Seq("one-third", "column"))(
-        H4(t),
+        H3(t),
         P(c)
       ) }: _*
     )
@@ -173,51 +248,66 @@ object Template {
         Link(rel = stylesheet, href = uri"http://fonts.googleapis.com/css?family=Ovo"),
         Link(rel = stylesheet, href = uri"http://fonts.googleapis.com/css?family=Fira Mono"),
         Link(rel = stylesheet, href = uri"http://fonts.googleapis.com/css?family=Philosopher"),
-	Script(typ = "text/javascript", src = uri"http://cdn.rawgit.com/showdownjs/showdown/1.2.2/dist/showdown.min.js"),
+	Script(typ = "text/javascript", src = ^ / "script" / "showdown.js"),
 	Script(typ = "text/javascript", src = ^ / "script" / "rapture.js")
       ),
       Body(
         Div(id = 'nav)(
           P(classes = List("remove-bottom"))(
-            A(href = ^)("rapture.io")
-          )
+            A(href = uri"http://propensive.com")(
+              Img(classes = Seq("miniLogo"), src = ^ / "images" / "propensive.png"),
+              "Propensive"
+            ),
+            A(href = ^)(
+              Img(classes = Seq("miniLogo"), src = ^ / "images" / "mono_balloon_small.png"),
+              "Rapture"
+            ),
+            A(href = uri"https://scala.world/")(
+              Img(classes = Seq("miniLogo"), src = ^ / "images" / "sw.png"),
+              "Scala World"
+            ),
+            A(id = 'home, href = ^)(
+              Img(classes = Seq("miniLogo"), src = ^ / "images" / "home.png"),
+              "Home"
+            )
+          ),
+          Div(classes = Seq("shadow"))(" ")
         ),
-        Div(classes = Seq("shadow"))(" "),
         Div("", pageContent: _*),
         Div(id = 'links)(
           Div(classes = Seq("container", "glass"))(
             Div(classes = Seq("one-quarter", "column"))(
-              H4("Modules"),
+              H5("Modules"),
               Ul(
                 Li(A(href = ^ / "mod" / Site.modules.head.shortName)(Site.modules.head.name)),
                 Site.modules.tail.map { m => Li(A(href = ^ / "mod" / m.shortName)(m.name)) }: _*
               )
             ),
             Div(classes = Seq("one-quarter", "column"))(
-              H4("Resources"),
+              H5("Resources"),
               Ul(
                 Li(A(href = uri"https://github.com/propensive/rapture")("Source code")),
-                Li(A(href = uri"http://search.maven.org/#artifactdetails|com.propensive|rapture_2.11|2.0.0-M1|jar")("Binary downloads")),
+                Li(A(href = uri"http://search.maven.org/#artifactdetails|com.propensive|rapture_2.11|$currentVersion|jar")("Binary downloads")),
                 Li(A(href = uri"http://www.apache.org/licenses/LICENSE-2.0")("License"))
               )
             ),
             Div(classes = Seq("one-quarter", "column"))(
-              H4("Help and Support"),
+              H5("Help and Support"),
               Ul(
-                Li(A(href = ^ / "help" / "tutorials")("Tutorials")),
-                Li(A(href = ^ / "help" / "lists")("Mailing lists")),
-                Li(A(href = ^ / "help" / "apidocs")("API Documentation")),
-                Li(A(href = ^ / "help" / "gitter")("Gitter")),
-                Li(A(href = ^ / "help" / "issues")("Issues"))
+                Li(A(href = ^ / "learn")("Tutorials")),
+                Li(A(href = ^ / "lists")("Mailing lists")),
+                Li(A(href = ^ / "api")("API Documentation")),
+                Li(A(href = uri"https://gitter.im/propensive/rapture")("Gitter")),
+                Li(A(href = uri"https://github.com/propensive/rapture/issues")("Issue Tracker"))
               )
             ),
             Div(classes = Seq("one-quarter", "column"))(
-              H4("Propensive"),
+              H5("Propensive"),
               Ul(
-                Li(A(href = ^ / "propensive" / "support")("Commercial support")),
-                Li(A(href = ^ / "propensive" / "training")("Training")),
-                Li(A(href = ^ / "propensive" / "contact")("Contact")),
-                Li(A(href = ^ / "propensive" / "blog")("Blog"))
+                //Li(A(href = ^ / "propensive" / "support")("Commercial support")),
+                //Li(A(href = ^ / "propensive" / "training")("Training")),
+                Li(A(href = uri"http://propensive.com")("Contact"))
+                //Li(A(href = ^ / "propensive" / "blog")("Blog"))
               )
             )
           )
