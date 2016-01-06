@@ -10,6 +10,6 @@ Below is a short and incomplete list of ideas for future tutorials, which we
 hope to appear soon:
 
 - Extracting static types from JSON
-- Exploiting the type system to writing correct HTML
+- Exploiting the type system to write correct HTML
 - Making internationalized messages typesafe
 
