@@ -1,0 +1,130 @@
+html {
+  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  background: url(../images/propensive_back.jpg) no-repeat center center fixed;
+  background-size: cover;
+  font-family: "Alegreya Sans";
+  font-weight: 400;
+  color: rgb(50, 50, 50);
+  min-height: 100%;
+}
+
+#image {
+  position: absolute;
+  top: 80px;;
+  right: 0;
+  left: 50%;
+  bottom: 0;
+  height: 100%;
+  width: 50%;
+  background: url(../images/background3.jpg) no-repeat center center fixed;
+  background-size: cover;
+}
+
+#page {
+  background-color: white;
+  position: absolute;
+  top: 80px;
+  right: 50%;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 50%;
+  min-width: 600px;
+  max-width: 1000px;
+  padding: 50px 50px 50px 200px;
+  box-shadow: 0 0 50px #444444;
+}
+
+#menu {
+  box-shadow: 0 0 50px black;
+  background: #24333b;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 80px;
+}
+
+.terminus {
+  width: 30px;
+  height: 30px;
+  background-color: #80b3ff;
+  border-radius: 15px;
+}
+
+#menu img {
+  height: 50px;
+  margin: 15px 50px 15px 50px;
+  opacity: 0.5;
+}
+
+#menu img:hover {
+  opacity: 0.7;
+}
+
+#propensiveLogo {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  max-height: 131px;
+  margin: 0 auto 50px auto;
+}
+
+#main {
+  position: absolute;
+  width: 30%;
+  padding: 50px;
+  z-index: 10;
+  top: 180px;
+  right: 100px;
+  margin: 0px 0 0 -300px;
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 20px grey, inset 0 0 10px white;
+}
+
+h1 {
+  font-family: Halant;
+  font-size: 56pt;
+  margin: 80px 0 96px 0;
+  line-height: 60pt;
+  color: #5c5c3d;
+}
+
+h2 {
+  font-size: 15pt;
+}
+
+#main p {
+  font-size: 14pt;
+  font-family: "Alegreya Sans";
+  margin: 20pt 0 20pt 0;
+  line-height: 18pt;
+}
+
+a, a:link, a:visited {
+  color: #207b8f;
+  text-decoration: none;
+}
+
+a:hover, a:active {
+  color: #00b7de;
+  text-decoration: none;
+}
+
+@media (max-width: 1200px) {
+  #main {
+    position: inherit;
+    width: inherit;
+    margin: 160px 0 0 0;
+    padding: 30px 30px 5px;
+  }
+
+  #propensiveLogo {
+    width: 50%;
+    margin: 0 auto 0 auto;
+  }
+}
