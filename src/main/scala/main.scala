@@ -338,7 +338,7 @@ object Template {
               Img(classes = Seq("miniLogo"), src = ^ / "images" / "propensive.png"),
               "Propensive"
             ),
-            A(href = uri"https://rapture.io/")(
+            A(href = uri"http://rapture.io/")(
               Img(classes = Seq("miniLogo"), src = ^ / "images" / "mono_balloon_small.png"),
               "Rapture"
             ),
