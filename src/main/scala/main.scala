@@ -60,7 +60,7 @@ object Main {
 	     }
 	  ]
 	}""" else json"{}"
-      case Path(^ / "download" / "latest") =>
+      case Path(^ / "download" / "rapture-latest.jar") =>
         uri"http://search.maven.org/remotecontent?filepath=com/propensive/rapture_2.11/$currentVersion/rapture_2.11-$currentVersion.jar"
       case Path(^ / "script" / f) =>
         implicit val mime = MimeTypes.`text/javascript`
@@ -155,7 +155,7 @@ object Pages {
         "<artifactId>rapture_2.11</artifactId>", Br,
         s"<version>$currentVersion</version>"
       ),
-      Div(id = 'jar, style = "display:none")(s"""http://rapture.io/rapture-$currentVersion.jar""")
+      Div(id = 'jar, style = "display:none")(s"""http://rapture.io/rapture-latest.jar""")
     )
   )
  
