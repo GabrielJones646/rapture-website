@@ -203,6 +203,7 @@ object Pages {
         ) else Div(" ")
       )
     ),
+    Div(classes = Seq("topPadding"))(" "),
     Div(classes = Seq("container", "first"))(
       Div(classes = Seq("column", "one-quarter", "follow"))(
         P(Br)
@@ -259,7 +260,13 @@ object Pages {
       H5("About Rapture")
     ),
     Div(classes = Seq("container"))(
-      Site.keyPoints.map { case (t, c) => Div(classes = Seq("one-third", "column"))(
+      Site.keyPoints.take(3).map { case (t, c) => Div(classes = Seq("one-third", "column"))(
+        H3(t),
+        P(c)
+      ) }: _*
+    ),
+    Div(classes = Seq("container"))(
+      Site.keyPoints.drop(3).map { case (t, c) => Div(classes = Seq("one-third", "column"))(
         H3(t),
         P(c)
       ) }: _*
