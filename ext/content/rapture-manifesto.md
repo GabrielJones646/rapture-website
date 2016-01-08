@@ -8,7 +8,7 @@ And Rapture is in production use in a number of successful projects.
 
 Rapture includes a comprehensive *[JSON library](/mod/json)*, and an experimental
 counterpart for working with *XML*. The project started around development of a
-libary for working with *file and network I/O*. Smaller modules exist for
+library for working with *file and network I/O*. Smaller modules exist for
 typesafe *[internationalization](/mod/i18n)*, *cryptography* and *codecs*,
 reading *CSV* files, writing *LaTeX*, and working with *[HTML](/mod/html)* and
 *HTTP*. The modules share a common philosophy of being typesafe, intuitive,
