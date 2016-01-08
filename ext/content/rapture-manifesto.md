@@ -95,7 +95,7 @@ And, unfortunately it was never that straightforward. Publishing to Maven
 Central without SBT was a painful experience. In my darkest moments of trying,
 with the limited documentation available, I even wrote a humorous "create your
 own adventure"
-[game](http://play.textadventures.co.uk/Play.aspx?id=zv-wer8keey6rnhk4am25qhttp://play.textadventures.co.uk/Play.aspx?id=zv-wer8keey6rnhk4am25q),
+[game](http://play.textadventures.co.uk/Play.aspx?id=zv-wer8keey6rnhk4am25q),
 the (unachievable) goal of which was to publish a hypothetical library to Maven
 Central.
 
