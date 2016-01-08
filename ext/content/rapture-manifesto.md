@@ -99,9 +99,9 @@ own adventure"
 the (unachievable) goal of which was to publish a hypothetical library to Maven
 Central.
 
-But for a few months now, thanks to the tireless efforts of Alistair Johnson,
-Rapture is available on Maven Central, and including it as a dependency is as
-trivial as for any other Scala library.
+But for a few months now, thanks to the tireless efforts of [Alistair
+Johnson](https://github.com/InTheNow), Rapture is available on Maven Central,
+and including it as a dependency is as trivial as for any other Scala library.
 
 ### Website
 

@@ -249,8 +249,9 @@ object Pages {
 	H5(classes = Seq("whatNow"))("What now?"),
 	Ul(classes = Seq("bullets"))(
           Li(A(href = ^ / "intro")("Getting Started with Rapture")),
-	  Li(A(href = uri"https://gitter.im/propensive/rapture", target = '_new)("Join the discussion on Gitter")),
-          Li(A(href = uri"https://github.com/propensive/rapture")("Explore the source code"))
+          Li(A(href = ^ / "blog" / "rapture-manifesto")("Read the Rapture Manifesto blogpost")),
+	  Li(A(href = uri"https://gitter.im/propensive/rapture", target = '_new)("Join the discussion on Gitter"))//,
+          //Li(A(href = uri"https://github.com/propensive/rapture")("Explore the source code"))
 	)
       )
     ),
