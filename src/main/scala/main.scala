@@ -350,19 +350,19 @@ object Template {
           P(classes = List("remove-bottom"))(
             A(href = uri"http://propensive.com")(
               Img(classes = Seq("miniLogo"), src = ^ / "images" / "propensive.png"),
-              "Propensive"
+              Span("Propensive")
             ),
             A(href = uri"http://rapture.io/")(
               Img(classes = Seq("miniLogo"), src = ^ / "images" / "mono_balloon_small.png"),
-              "Rapture"
+              Span("Rapture")
             ),
             A(href = uri"https://scala.world/")(
               Img(classes = Seq("miniLogo"), src = ^ / "images" / "sw.png"),
-              "Scala World"
+              Span("Scala World")
             ),
             A(id = 'home, href = ^)(
               Img(classes = Seq("miniLogo"), src = ^ / "images" / "home.png"),
-              "Home"
+              Span("Home")
             )
           ),
           Div(classes = Seq("shadow"))(" ")
