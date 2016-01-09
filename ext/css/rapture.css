@@ -1,5 +1,5 @@
 body {
-  background-image: url('/images/background.jpg');
+  background-image: url('/images/raptureBackground.jpg');
   background-attachment: fixed;
   background-size: cover;
   overflow-x: hidden
@@ -69,7 +69,7 @@ h1 {
   width: 1em;
   height: 1.43em;
   filter: drop-shadow(0 0 5px black);
-  background: url('/images/mono_balloon_small.png');
+  background: url('/images/raptureSmallLogo.png');
   background-size: 100%;
   display: inline-block;
   transition: opacity linear 0.5s;
@@ -254,7 +254,7 @@ h5 {
 }
 
 .banner {
-  background-image: url('/images/banner.jpg');
+  background-image: url('/images/raptureBanner.jpg');
   background-width: 100%;
   height: 400px;
   width: 100%;
@@ -272,7 +272,7 @@ h5 {
 }
 
 .shortBanner {
-  background-image: url('/images/banner2.jpg');
+  background-image: url('/images/raptureBanner2.jpg');
   background-width: 100%;
   height: 200px;
   width: 100%;

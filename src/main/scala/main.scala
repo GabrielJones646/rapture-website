@@ -217,7 +217,7 @@ object Pages {
       Div(classes = Seq("column", "one-half", "page"))(
         H2(heading),
         Script(typ = "text/javascript")(s"includeMd('$content');"),
-        Img(src = ^ / "images" / "mono_balloon_small.png", id = 'end)
+        Img(src = ^ / "images" / "raptureSmallLogo.png", id = 'end)
       ),
       Div(classes = Seq("column", "one-quarter", "sidebar"))(
         if(showAuthor) Div(
@@ -242,7 +242,7 @@ object Pages {
   def home() = Template.page("Rapture: Home")(
     Div(classes = Seq("container", "banner"))(
       H1(
-        Span(id = 'balloon)(Img(src = ^ / "images" / "logo_color.png")),
+        Span(id = 'balloon)(Img(src = ^ / "images" / "raptureColorLogo.png")),
         "Rapture"
       ),
       Div(classes = Seq("shadow2"))(" ")
@@ -349,15 +349,15 @@ object Template {
         Div(id = 'nav)(
           P(classes = List("remove-bottom"))(
             A(href = uri"http://propensive.com")(
-              Img(classes = Seq("miniLogo"), src = ^ / "images" / "propensive.png"),
+              Img(classes = Seq("miniLogo"), src = ^ / "images" / "propensiveSmallLogo.png"),
               Span("Propensive")
             ),
             A(href = uri"http://rapture.io/")(
-              Img(classes = Seq("miniLogo"), src = ^ / "images" / "mono_balloon_small.png"),
+              Img(classes = Seq("miniLogo"), src = ^ / "images" / "raptureSmallLogo.png"),
               Span("Rapture")
             ),
             A(href = uri"https://scala.world/")(
-              Img(classes = Seq("miniLogo"), src = ^ / "images" / "sw.png"),
+              Img(classes = Seq("miniLogo"), src = ^ / "images" / "scalaWorldSmallLogo.png"),
               Span("Scala World")
             ),
             A(id = 'home, href = ^)(

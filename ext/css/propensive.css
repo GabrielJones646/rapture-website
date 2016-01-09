@@ -4,24 +4,12 @@ html {
 }
 
 body {
-  background: url(../images/propensive_back.jpg) no-repeat center center fixed;
+  background: url(../images/propensiveBackground.jpg) no-repeat center center fixed;
   background-size: cover;
   font-family: "Alegreya Sans";
   font-weight: 400;
   color: rgb(50, 50, 50);
   min-height: 100%;
-}
-
-#image {
-  position: absolute;
-  top: 80px;;
-  right: 0;
-  left: 50%;
-  bottom: 0;
-  height: 100%;
-  width: 50%;
-  background: url(../images/background3.jpg) no-repeat center center fixed;
-  background-size: cover;
 }
 
 #page {
