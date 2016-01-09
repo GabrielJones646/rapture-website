@@ -37,10 +37,6 @@ a:hover .miniLogo {
   margin-top: 400px;
 }
 
-.shadow3 {
-  margin-top: 200px;
-}
-
 p, h1, h2, h3, h4, h5, h6, li {
   font-family: Ovo;
 }
@@ -98,6 +94,7 @@ h1 {
   position: fixed;
   z-index: 300;
   width: 220px;
+  margin-top: 10px;
 }
 
 .banner h1 {
@@ -362,6 +359,11 @@ h5 {
 
 .first {
   margin-top: 20px;
+}
+
+.topPad {
+  height: 200px;
+  max-height: 15vh;
 }
 
 .topPadding {

@@ -79,6 +79,8 @@ object Main {
         }.getOrElse(Pages.notFound()): HtmlDoc
       case Path(^ / "blog" / "rapture-manifesto") =>
         Pages.basicPage("The Rapture Manifesto", "rapture-manifesto", Nil)
+      case Path(^ / "blog" / "imports") =>
+        Pages.basicPage("Imports in Rapture", "imports", Nil)
       case Path(^ / "learn") =>
         Pages.basicPage("Tutorials", "learn", Nil, showAuthor = false)
       case Path(^ / "lists") =>
@@ -129,7 +131,8 @@ case class BlogEntry(id: String, date: Date, title: String)
 object Blog {
 
   val blogEntries = List(
-    BlogEntry("rapture-manifesto", 8-Jan-2016, "The Rapture Manifesto")
+    BlogEntry("rapture-manifesto", 8-Jan-2016, "The Rapture Manifesto"),
+    BlogEntry("imports", 9-Jan-2016, "Imports in Rapture")
   )
 
   val blogs = blogEntries.map { case be@BlogEntry(id, _, _) => (id -> be) }.toMap
@@ -188,20 +191,23 @@ object Pages {
   def basicPage(heading: String, content: String, links: List[String], showAuthor: Boolean = true): HtmlDoc = Template.page(heading)(
     Div(classes = Seq("container", "shortBanner"))(
       Div(classes = Seq("shadow"))(" "),
-      H1(" "),
-      Div(classes = Seq("shadow3"))(" ")
+      Div(classes = Seq("topPad")),
+      Div(classes = Seq("shadow3"))(" "),
+      Div(classes = Seq("container", "fixed"))(
+        Div(classes = Seq("column", "one-quarter", "follow"))(
+          if(links.length > 0) Div(
+            H5("Quick Links"),
+            Ul(classes = Seq("bullets"))(
+	      links.map { ln => Li(
+	        A(href = anch(ln.toLowerCase.replaceAll("[^a-z0-9]", "")))(ln)
+  	      ) }: _*
+            )
+          ) else Div(" ")
+        )
+      )
     ),
     Div(classes = Seq("container", "fixed"))(
-      Div(classes = Seq("column", "one-quarter", "follow"))(
-        if(links.length > 0) Div(
-          H5("Quick Links"),
-          Ul(classes = Seq("bullets"))(
-	    links.map { ln => Li(
-	      A(href = anch(ln.toLowerCase.replaceAll("[^a-z0-9]", "")))(ln)
-	    ) }: _*
-          )
-        ) else Div(" ")
-      )
+      Div(classes = Seq("column", "one-quarter", "follow"))(" ")
     ),
     Div(classes = Seq("topPadding"))(" "),
     Div(classes = Seq("container", "first"))(
