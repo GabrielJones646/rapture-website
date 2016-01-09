@@ -131,8 +131,8 @@ case class BlogEntry(id: String, date: Date, title: String)
 object Blog {
 
   val blogEntries = List(
-    BlogEntry("rapture-manifesto", 8-Jan-2016, "The Rapture Manifesto"),
-    BlogEntry("imports", 9-Jan-2016, "Imports in Rapture")
+    BlogEntry("rapture-manifesto", 8-Jan-2016, "The Rapture Manifesto")
+    //BlogEntry("imports", 9-Jan-2016, "Imports in Rapture")
   )
 
   val blogs = blogEntries.map { case be@BlogEntry(id, _, _) => (id -> be) }.toMap
