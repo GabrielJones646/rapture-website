@@ -32,7 +32,6 @@ The following backends are available:
  - Circe (`circe`)
  - Jackson (`jackson`)
  - Jawn (`jawn`)
- - JFC (`jfc`)
  - JSON4S (`json4s`)
  - Lift (`lift`)
  - Play (`play`)
@@ -423,7 +422,7 @@ For example, given the two values `j1` and `j2`,
 ```scala
 import jsonBackends.jawn._
 val j1: Json = json"""{ "foo": "bar" }"""
-import jsonBackends.jfc._
+import jsonBackends.circe._
 val j2: Json = json"""{ "baz": "quux" }"""
 ```
 

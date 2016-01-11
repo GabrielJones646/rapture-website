@@ -131,8 +131,8 @@ case class BlogEntry(id: String, date: Date, title: String)
 object Blog {
 
   val blogEntries = List(
-    BlogEntry("rapture-manifesto", 8-Jan-2016, "The Rapture Manifesto")
-    //BlogEntry("imports", 9-Jan-2016, "Imports in Rapture")
+    BlogEntry("rapture-manifesto", 8-Jan-2016, "The Rapture Manifesto"),
+    BlogEntry("imports", 11-Jan-2016, "Imports in Rapture")
   )
 
   val blogs = blogEntries.map { case be@BlogEntry(id, _, _) => (id -> be) }.toMap
@@ -164,18 +164,9 @@ object Pages {
  
   def scalaWorld() = Template.globalPage("scalaworld", "Scala World 2016")(
     Div(id = 'circle)(
-      P(
-        "SCALA", Br,
-        "WORLD", Br,
-	"2016"
-      ),
-      P(classes = Seq("small"))(
-        "11-13 SEPTEMBER"
-      ),
-      P(classes = Seq("small"))(
-        "RHEGED CENTRE", Br,
-        "LAKE DISTRICT, UK"
-      )
+      P("SCALA", Br, "WORLD", Br, "2016"),
+      P(classes = Seq("small"))("11-13 SEPTEMBER"),
+      P(classes = Seq("small"))("RHEGED CENTRE", Br, "LAKE DISTRICT, UK")
     ),
     P(id = 'moreDetails)("More details coming soon.")
   )

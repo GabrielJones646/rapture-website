@@ -25,18 +25,25 @@ methods return:
 import modes.returnTry._
 ```
 
+This, in particular, can cause people some concern.
+
 ### Coding standards
 
 Imports, particularly when combined with implicits, have great potential to be
 confusing, so teams often enforce various limitations on how and when they
 should be used. Often that means that as few types and values as possible
 should be imported, and each should be named explicitly in the import
-statement—no wildcards.
+statement, so wildcard imports are often forbidden.
 
-I was faced with the option of whether to try to fit Rapture within these
-common constraints—the Java style of importing—but instead I decided to go in
-the other direction, and fully embrace the power they offer. One thing you will
-notice about Rapture code is that there are a lot of imports.
+I was faced with the choice between trying to fit Rapture into these common
+constraints—the Java style of importing—but instead I decided to go in the
+other direction, and fully embrace the power they offer, and one thing you will
+notice about Rapture code is that there can be a lot of imports.
+
+In general, when I'm faced with a choice between avoiding a feature because
+it's "too difficult", and trying to educate users about that feature through
+more exposure, I'll favor the latter, purely in the interests of the long-term
+benefits of better understanding.
 
 So, what is this power I'm not willing to give up in exchange for code that's
 easier to reason about?
@@ -45,9 +52,9 @@ easier to reason about?
 
 Given that Rapture makes extensive use of configuration imports—those which
 change the runtime or compile-time behavior of subsequent code—we can
-reasonably ask the question of what exactly they are configuring. The answer is
-everything within their scope, and the position of the import lets us choose
-that scope.
+reasonably ask the question: what are they configuring? The answer is
+everything within their lexical scope, and the position of the import lets us
+choose that scope.
 
 We can include an import at the top of a file and have it apply to the whole
 file, within a class or object body and have it apply just within that body, or
@@ -69,16 +76,19 @@ only importing a single item, an implicit typeclass instance.
 There's a very good reason for this.
 
 In the case of most typeclasses in Rapture, a choice between a number of
-alternatives is offered: a choice of ways to format dates, a choice of JSON
-backends, a choice of ways to pattern match, a choice of character encodings.
+alternatives is offered: a choice of ways to format dates; a choice of JSON
+backends; a choice of ways to pattern match; a choice of character encodings.
 It never makes sense to have two or more implicit instances of the same
-typeclass type in scope at the same time: it would lead to an "ambiguous
-implicts" error at compile time. This can be avoided by ensuring that a new
-such import will shadow any previous imports of the same type, and we do this
-by giving them the same name, so both the `rapture.time.dateFormats.longUs` and
+typeclass type in scope at the same time: this would lead to an "ambiguous
+implicts" error at compile time.
+
+This can be avoided by ensuring that any new such import shadows any previous
+imports of the same type, and we do this by giving them the same name, so both
+the `rapture.time.dateFormats.longUs` and
 `rapture.time.dateFormats.shortEuropean` objects contain implicit `DateFormat`
 instances with the name `implicitDateFormat`, and importing either one will
-shadow, or "clobber", all previous imports with the same name.
+shadow, or "clobber", all previous imports with the same name, and avoid any
+ambiguity during implicit resolution.
 
 This works in application code when switching between a number of different
 configurations, but is particularly useful in the Scala REPL. Here's an example
@@ -117,7 +127,7 @@ much as possible, the visible types and values within a top-level package like
 To mitigate the potential lack of clarity about which imports (and hence which
 typeclassees) are affecting the runtime or compile-time behavior of particular
 code, Rapture employs the low-tech solution of giving each import a very
-clear—and sometimes verbose—name.
+clear (and sometimes verbose) name.
 
 Whilst IDEs can offer assistance in debugging the imports that affect the
 behavior of different method calls, in the absence of that, we can fall back on
@@ -183,8 +193,8 @@ This, at least, saves a few keystrokes.
 
 Rapture doesn't shy away from using imports and implicits extensively, simply
 for the reason that they offer a well-scoped, declarative programming style,
-which offers great power in writing concise, boilerplate-free code. The usage
-may be controversial for the lack of explicitness around which imports impact
+which gives us much power in writing concise, boilerplate-free code. The usage
+may be controversial for its lack of explicitness around which imports impact
 which method calls, but as much as possible, simple conventions and clear
 naming are used to minimize potential for confusion.
 
