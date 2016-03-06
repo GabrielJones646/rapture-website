@@ -30,7 +30,7 @@ object `package` {
     def absolute = true
   }
 
-  val currentVersion = "2.0.0-M3"
+  val currentVersion = "2.0.0-M5"
 }
 
 object Main {
